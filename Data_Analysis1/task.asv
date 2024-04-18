@@ -1,0 +1,52 @@
+% 读取数据文件
+data = readtable('Inertial.csv');
+
+% 确定正确的列名并提取数据
+t = data.Timestamp_us_;
+v1 = data.GyroscopeX_deg_s_;
+v2 = data.GyroscopeY_deg_s_;
+v3 = data.GyroscopeZ_deg_s_;
+v4 = data.AccelerometerX_g_;
+v5 = data.AccelerometerY_g_;
+v6 = data.AccelerometerZ_g_;
+
+% Define the window size and step size
+windowSize = 4000;
+stepSize = 1; % 步长为1个样本，以便每次迭代提取一个新的样本窗口
+
+% 创建动态图
+figure;
+
+% Plot the sliding windows
+for i = 1:stepSize:(length(t) - windowSize + 1)
+    % Extract the current window data
+    startIndex = i;
+    endIndex = i + windowSize - 1;
+    windowT = t(startIndex:endIndex);
+    windowV1 = v1(startIndex:endIndex);
+    windowV2 = v2(startIndex:endIndex);
+    windowV3 = v3(startIndex:endIndex);
+    windowV4 = v4(startIndex:endIndex);
+    windowV5 = v5(startIndex:endIndex);
+    windowV6 = v6(startIndex:endIndex);
+    
+    % Plot the current window
+    subplot(2, 1, 1);
+    plot(windowT, windowV1, 'b-', windowT, windowV2, 'r-', windowT, windowV3, 'g-');
+    xlabel('Timestamp (us)');
+    ylabel('Gyroscope X (deg/s)');
+    title('Velocity vs Time');
+    legend('Line 1', 'Line 2', 'Line 3');
+    grid on;
+    
+    subplot(2, 1, 2);
+    plot(windowT, windowV4, 'm-', windowT, windowV5, 'c-', windowT, windowV6, 'y-');
+    xlabel('Timestamp (us)');
+    ylabel('Accelerometer X (g)');
+    title('Acceleration vs Time');
+    legend('Line 4', 'Line 5', 'Line 6');
+    grid on;
+    
+    % Pause to see the plot (optional)
+    pause(0.1); % 调整需要的情况下暂停
+end
